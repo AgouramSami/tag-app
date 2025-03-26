@@ -20,16 +20,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axiosInstance.post(
-        "https://tag-app-cf316661-58cf-4c47-9626-500918417b5e.railway.app/api/auth/login",
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await axiosInstance.post("/api/auth/login", formData);
 
       if (response.data.token) {
         await login(response.data);
@@ -48,7 +39,7 @@ const Login = () => {
     <div className="login-container">
       <div className="signup-card">
         <div className="logo-container">
-          <img src="src/assets/tag_logo.svg" alt="TAG Logo" className="logo" />
+          <img src="/tag_logo.svg" alt="TAG Logo" className="logo" />
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -64,6 +55,7 @@ const Login = () => {
             onChange={handleChange}
             placeholder="john.doe@gmail.com"
             required
+            autoComplete="username"
           />
 
           <label htmlFor="password" className="label_signup">
@@ -78,6 +70,7 @@ const Login = () => {
             onChange={handleChange}
             placeholder="********"
             required
+            autoComplete="current-password"
           />
 
           <Link to="/forgot-password" className="forgot-password">
