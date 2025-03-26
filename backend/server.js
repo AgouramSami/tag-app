@@ -17,13 +17,21 @@ app.use(express.json());
 
 // Middleware CORS personnalisé
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://tag-app-five.vercel.app");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-  );
-  res.header("Access-Control-Allow-Credentials", "true");
+  const origin = req.headers.origin;
+  const allowedOrigins = [process.env.CORS_ORIGIN, "http://localhost:5173"];
+
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+    res.header(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+    );
+    res.header(
+      "Access-Control-Allow-Headers",
+      "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
+    );
+    res.header("Access-Control-Allow-Credentials", "true");
+  }
 
   if (req.method === "OPTIONS") {
     return res.status(200).end();
