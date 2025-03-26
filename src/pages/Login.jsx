@@ -20,7 +20,16 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axiosInstance.post("/api/auth/login", formData);
+      const response = await axiosInstance.post(
+        "https://tag-app-cf316661-58cf-4c47-9626-500918417b5e.railway.app/api/auth/login",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
 
       if (response.data.token) {
         await login(response.data);
