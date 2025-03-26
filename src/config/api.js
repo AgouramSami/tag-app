@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// En production, on utilise le proxy Vercel
-const API_URL = "/api";
+const isDevelopment = process.env.NODE_ENV === "development";
+const API_URL = isDevelopment ? "http://localhost:5000/api" : "/api";
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
@@ -10,6 +10,15 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+// Intercepteur pour gérer les erreurs
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("API Error:", error.response?.data || error.message);
+    return Promise.reject(error);
+  }
+);
 
 export default axiosInstance;
 export { API_URL };
