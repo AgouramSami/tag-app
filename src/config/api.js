@@ -1,10 +1,6 @@
 import axios from "axios";
 
-const isDevelopment = process.env.NODE_ENV === "development";
-
-const API_URL = isDevelopment
-  ? "http://localhost:5000/api"
-  : "https://tag-app-production.up.railway.app/api"; // ← URL Railway publique
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
