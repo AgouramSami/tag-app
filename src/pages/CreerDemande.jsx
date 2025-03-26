@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/CreerDemande.css";
+import API_URL from "../config/api";
 
 const CreerDemande = () => {
   const [themes, setThemes] = useState([]);
@@ -15,9 +16,7 @@ const CreerDemande = () => {
 
   const fetchFaqSuggestions = async (query) => {
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/faqs/search?query=${query}`
-      );
+      const res = await axios.get(`${API_URL}/api/faqs/search?query=${query}`);
       setFaqSuggestions(res.data);
     } catch (error) {
       console.error("Erreur lors du chargement des suggestions FAQ :", error);
@@ -26,7 +25,7 @@ const CreerDemande = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/themes")
+      .get(`${API_URL}/api/themes`)
       .then((res) => setThemes(res.data))
       .catch(() => console.error("Erreur lors du chargement des thèmes."));
   }, []);
@@ -71,35 +70,24 @@ const CreerDemande = () => {
 
     const token = sessionStorage.getItem("token");
 
-    // ✅ Création de `FormData`
     const formData = new FormData();
     formData.append("theme", theme);
     formData.append("objet", objet);
     formData.append("description", description);
 
     piecesJointes.forEach((file) => {
-      formData.append("fichiers", file); // ✅ Ajoute les fichiers correctement
+      formData.append("fichiers", file);
     });
 
-    console.log(
-      "📤 Données envoyées :",
-      Object.fromEntries(formData.entries())
-    );
-
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/demandes",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data", // ✅ Obligatoire pour gérer les fichiers
-          },
-        }
-      );
+      const res = await axios.post(`${API_URL}/api/demandes`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       console.log("✅ Réponse backend :", res.data);
-
       setShowModal(true);
     } catch (error) {
       console.error("❌ Erreur lors de l'envoi de la demande :", error);
