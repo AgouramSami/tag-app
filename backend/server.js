@@ -37,9 +37,9 @@ app.use("/api/faqs", faqRoutes);
 
 // Connexion à MongoDB
 mongoose
-  .connect(process.env.MONGO_URI, { dbName: "tag_db" })
-  .then(() => console.log("🟢 Connecté à MongoDB - tag_db"))
-  .catch((err) => console.error("🔴 Erreur MongoDB :", err));
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("Connecté à MongoDB"))
+  .catch((err) => console.error("Erreur de connexion à MongoDB:", err));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Serveur lancé sur le port ${PORT}`));
