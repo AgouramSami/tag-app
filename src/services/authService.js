@@ -3,7 +3,7 @@ import axiosInstance from "../config/api";
 const authService = {
   login: async (credentials) => {
     try {
-      const response = await axiosInstance.post("/api/auth/login", credentials);
+      const response = await axiosInstance.post("/auth/login", credentials);
       return response.data;
     } catch (error) {
       console.error("Erreur de connexion:", error);
@@ -13,7 +13,7 @@ const authService = {
 
   register: async (userData) => {
     try {
-      const response = await axiosInstance.post("/api/auth/register", userData);
+      const response = await axiosInstance.post("/auth/register", userData);
       return response.data;
     } catch (error) {
       console.error("Erreur d'inscription:", error);
@@ -23,7 +23,7 @@ const authService = {
 
   logout: async () => {
     try {
-      const response = await axiosInstance.post("/api/auth/logout");
+      const response = await axiosInstance.post("/auth/logout");
       return response.data;
     } catch (error) {
       console.error("Erreur de déconnexion:", error);
@@ -33,7 +33,7 @@ const authService = {
 
   getCurrentUser: async () => {
     try {
-      const response = await axiosInstance.get("/api/auth/me");
+      const response = await axiosInstance.get("/auth/me");
       return response.data;
     } catch (error) {
       console.error("Erreur de récupération du profil:", error);
