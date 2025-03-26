@@ -4,10 +4,6 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
-    },
-    {
-      "source": "/api/:path*",
-      "destination": "https://tag-app-cf316661-58cf-4c47-9626-500918417b5e.railway.app/api/:path*"
     }
   ]
 }

@@ -54,7 +54,7 @@ const Dashboard = () => {
           <StatistiquesSatisfaction />
         </div>
       )}
-      
+
       {/* Autres sections du dashboard selon le rôle */}
       {user.role === "admin" ? (
         <div className="dashboard-grid">
