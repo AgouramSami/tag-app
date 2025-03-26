@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "../styles/Login.css";
 import { useAuth } from "../context/AuthContext";
+import API_URL from "../config/api";
 
 const Login = () => {
   const { login } = useAuth();
@@ -21,7 +22,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${API_URL}/api/auth/login`,
         formData
       );
 
