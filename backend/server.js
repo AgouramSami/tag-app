@@ -16,10 +16,14 @@ const faqRoutes = require("./routes/faqRoutes"); // Ajout des routes FAQ
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173", // ✅ Remplace par l'URL de ton frontend
+    origin: [
+      "https://tag-app-five.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ],
     credentials: true,
-    methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
