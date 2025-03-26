@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import "../styles/Login.css";
 import { useAuth } from "../context/AuthContext";
-import API_URL from "../config/api";
+import axiosInstance from "../config/api";
 
 const Login = () => {
   const { login } = useAuth();
@@ -21,10 +20,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        `${API_URL}/api/auth/login`,
-        formData
-      );
+      const response = await axiosInstance.post("/api/auth/login", formData);
 
       if (response.data.token) {
         await login(response.data);
