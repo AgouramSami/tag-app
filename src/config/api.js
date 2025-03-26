@@ -4,7 +4,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 const API_URL = isDevelopment
   ? "http://localhost:5000/api"
-  : "https://tag-app-production.up.railway.app/api";
+  : "https://tag-app-production.up.railway.app/api"; // ← URL Railway publique
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
