@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import "../styles/creerDemande.css";
+import "../styles/CreerDemande.css";
 
 const CreerDemande = () => {
   const [themes, setThemes] = useState([]);
@@ -272,8 +272,12 @@ const CreerDemande = () => {
           {showModal && (
             <div className="modale-creer-demande">
               <div className="modale-creer-demande-card">
-                <p className="titre-modale">Votre demande à été envoyée avec succès !</p>
-                <p className="sous-titre-modale">Nous la traiterons dans les meilleurs delais.</p>
+                <p className="titre-modale">
+                  Votre demande à été envoyée avec succès !
+                </p>
+                <p className="sous-titre-modale">
+                  Nous la traiterons dans les meilleurs delais.
+                </p>
                 <button
                   onClick={() => (window.location.href = "/dashboard")}
                   className="btn-retour-accueil"
