@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Login.css";
 import { useAuth } from "../context/AuthContext";
-import axiosInstance from "../config/api";
+import authService from "../services/authService";
 
 const Login = () => {
   const { login } = useAuth();
@@ -20,10 +20,9 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axiosInstance.post("/api/auth/login", formData);
-
-      if (response.data.token) {
-        await login(response.data);
+      const response = await authService.login(formData);
+      if (response.token) {
+        await login(response);
       } else {
         setError("Erreur d'authentification.");
       }
