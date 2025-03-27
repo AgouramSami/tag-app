@@ -5,8 +5,6 @@ import ConsulterDemande from "../components/ConsulterDemande";
 import "../styles/JuristePanel.css";
 import axiosInstance from "../config/api";
 
-const API_URL = "http://localhost:5000"; // URL de votre serveur backend
-
 const JuristePanel = () => {
   const navigate = useNavigate();
   const [demandes, setDemandes] = useState([]);
@@ -34,26 +32,18 @@ const JuristePanel = () => {
         const response = await axiosInstance.get("/demandes", {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
           },
         });
 
         console.log("📡 Statut de la réponse:", response.status);
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("❌ Erreur serveur:", errorData);
-          throw new Error(
-            errorData.message || "Erreur lors de la récupération des demandes"
-          );
-        }
-
-        const data = await response.json();
-        console.log("✅ Données reçues:", data);
-        setDemandes(data);
-      } catch (err) {
-        console.error("❌ Erreur:", err);
-        setError(err.message);
+        setDemandes(response.data);
+        setError(null);
+      } catch (error) {
+        console.error("❌ Erreur:", error);
+        setError(
+          error.response?.data?.message ||
+            "Erreur lors de la récupération des demandes"
+        );
       } finally {
         setIsLoading(false);
       }
