@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import axiosInstance from "../config/api";
 import { useLocation } from "react-router-dom";
 import "../styles/FAQ.css";
 
@@ -15,7 +15,7 @@ const FAQ = ({ isJuriste }) => {
   const location = useLocation();
 
   useEffect(() => {
-    fetchFAQs();
+    fetchFaqs();
   }, []);
 
   useEffect(() => {
@@ -31,12 +31,12 @@ const FAQ = ({ isJuriste }) => {
     }
   }, [faqs, location.hash]);
 
-  const fetchFAQs = async () => {
+  const fetchFaqs = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/faqs");
+      const res = await axiosInstance.get("/faqs");
       setFaqs(res.data);
     } catch (error) {
-      console.error("Erreur lors du chargement des FAQ :", error);
+      console.error("❌ Erreur:", error);
     }
   };
 
@@ -44,15 +44,14 @@ const FAQ = ({ isJuriste }) => {
     setExpandedIndex(expandedIndex === index ? null : index);
   };
 
-  const handleAddFAQ = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/faqs", newFaq, {
-        headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
-      });
-      fetchFAQs();
-      setIsModalOpen(false);
+      await axiosInstance.post("/faqs", newFaq);
+      fetchFaqs();
+      setNewFaq({ question: "", reponse: "" });
     } catch (error) {
-      console.error("Erreur lors de l'ajout de la FAQ :", error);
+      console.error("❌ Erreur:", error);
     }
   };
 
@@ -111,7 +110,7 @@ const FAQ = ({ isJuriste }) => {
               }
               className="faq-textarea"
             />
-            <button className="save-faq-btn" onClick={handleAddFAQ}>
+            <button className="save-faq-btn" onClick={handleSubmit}>
               Enregistrer
             </button>
           </div>

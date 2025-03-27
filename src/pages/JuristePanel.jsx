@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CardDemande from "../components/CardDemande";
 import ConsulterDemande from "../components/ConsulterDemande";
 import "../styles/JuristePanel.css";
+import axiosInstance from "../config/api";
 
 const API_URL = "http://localhost:5000"; // URL de votre serveur backend
 
@@ -30,7 +31,7 @@ const JuristePanel = () => {
 
         console.log("🔑 Token trouvé:", token.substring(0, 20) + "...");
 
-        const response = await fetch(`${API_URL}/api/demandes`, {
+        const response = await axiosInstance.get("/demandes", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -95,14 +96,13 @@ const JuristePanel = () => {
         fichier: reponse.fichier?.name,
       });
 
-      const response = await fetch(
-        `${API_URL}/api/demandes/${demandeSelectionnee._id}/repondre`,
+      const response = await axiosInstance.put(
+        `/demandes/${demandeSelectionnee._id}/repondre`,
+        formData,
         {
-          method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          body: formData,
         }
       );
 

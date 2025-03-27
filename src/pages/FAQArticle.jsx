@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../config/api";
 import "../styles/FAQArticle.css";
 
 const FAQArticle = () => {
@@ -10,10 +10,10 @@ const FAQArticle = () => {
   useEffect(() => {
     const fetchFAQ = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/faqs/${id}`);
+        const res = await axiosInstance.get(`/faqs/${id}`);
         setFaq(res.data);
       } catch (error) {
-        console.error("Erreur lors du chargement de l'article FAQ :", error);
+        console.error("❌ Erreur:", error);
       }
     };
 

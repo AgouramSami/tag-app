@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import RGPDNotice from "../components/RGPDNotice";
 import CardDemande from "../components/CardDemande";
 import "../styles/MesDemandes.css";
+import axiosInstance from "../config/api";
 
 const API_URL = "http://localhost:5000";
 
@@ -30,21 +31,11 @@ const MesDemandes = () => {
           return;
         }
 
-        const response = await fetch(`${API_URL}/api/demandes`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Erreur lors du chargement des demandes");
-        }
-
-        const data = await response.json();
-        setDemandes(data);
-      } catch (err) {
-        console.error("❌ Erreur:", err);
-        setError(err.message);
+        const response = await axiosInstance.get("/demandes");
+        setDemandes(response.data);
+      } catch (error) {
+        console.error("❌ Erreur:", error);
+        setError(error.message);
       } finally {
         setIsLoading(false);
       }
@@ -60,17 +51,7 @@ const MesDemandes = () => {
 
     try {
       const token = sessionStorage.getItem("token");
-      const response = await fetch(`${API_URL}/api/demandes/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Erreur lors de la suppression de la demande");
-      }
-
+      const response = await axiosInstance.delete(`/demandes/${id}`);
       setDemandes(demandes.filter((d) => d._id !== id));
       setSelectedDemande(null);
     } catch (err) {
@@ -131,23 +112,19 @@ const MesDemandes = () => {
         formData.append("fichier", fichier);
       }
 
-      const response = await fetch(
-        `${API_URL}/api/demandes/${selectedDemande._id}/message`,
+      const response = await axiosInstance.post(
+        `/demandes/${selectedDemande._id}/message`,
+        formData,
         {
-          method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          body: formData,
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Erreur lors de l'envoi de la réponse");
-      }
-
-      const data = await response.json();
-      setSelectedDemande(data);
+      setDemandes(
+        demandes.map((d) => (d._id === selectedDemande._id ? response.data : d))
+      );
       setReponse("");
       setFichier(null);
       setErreurFichier("");
@@ -164,25 +141,21 @@ const MesDemandes = () => {
 
   const handleRatingSubmit = async () => {
     try {
-      const response = await fetch(
-        `${API_URL}/api/demandes/${demandeToClose._id}/cloturer`,
+      const response = await axiosInstance.put(
+        `/demandes/${demandeToClose._id}/cloturer`,
         {
-          method: "PUT",
+          note,
+        },
+        {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify({ note }),
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Erreur lors de la clôture de la demande");
-      }
-
-      const updatedDemande = await response.json();
       setDemandes(
-        demandes.map((d) => (d._id === updatedDemande._id ? updatedDemande : d))
+        demandes.map((d) => (d._id === response.data._id ? response.data : d))
       );
       setShowRatingModal(false);
       setNote(0);
