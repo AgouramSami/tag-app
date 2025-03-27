@@ -19,6 +19,8 @@ const StatistiquesSatisfaction = () => {
           return;
         }
 
+        console.log("🔑 Token trouvé:", token.substring(0, 20) + "...");
+
         const response = await axiosInstance.get(
           "/demandes/stats/satisfaction",
           {
@@ -27,6 +29,13 @@ const StatistiquesSatisfaction = () => {
             },
           }
         );
+
+        console.log("📊 Données reçues:", response.data);
+
+        if (!response.data || response.data.length === 0) {
+          setError("Aucune donnée de statistiques disponible");
+          return;
+        }
 
         setStatistiques(response.data);
         setError(null);
