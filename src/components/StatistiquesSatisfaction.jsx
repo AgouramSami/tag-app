@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import "../styles/StatistiquesSatisfaction.css";
+import axiosInstance from "../config/api";
 
 const StatistiquesSatisfaction = () => {
   const [statistiques, setStatistiques] = useState([]);
@@ -8,31 +9,21 @@ const StatistiquesSatisfaction = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchStatistiques = async () => {
+    const fetchStats = async () => {
       try {
-        const token = sessionStorage.getItem("token");
-        const response = await fetch(
-          "http://localhost:5000/api/demandes/stats/satisfaction",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Erreur lors de la récupération des statistiques");
-        }
-        const data = await response.json();
-        setStatistiques(data);
-      } catch (err) {
-        setError(err.message);
-        console.error("Erreur:", err);
+        setLoading(true);
+        const response = await axiosInstance.get("/demandes/stats/satisfaction");
+        setStatistiques(response.data);
+        setError(null);
+      } catch (error) {
+        console.error("❌ Erreur:", error);
+        setError(error.response?.data?.message || "Erreur lors de la récupération des statistiques");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStatistiques();
+    fetchStats();
   }, []);
 
   if (loading) {
@@ -45,9 +36,7 @@ const StatistiquesSatisfaction = () => {
 
   return (
     <div className="stats-container">
-      <h2 className="stats-title">
-        Statistiques de satisfaction par strate de commune
-      </h2>
+      <h2 className="stats-title">Statistiques de satisfaction par strate de commune</h2>
 
       <div className="stats-grid">
         {statistiques.map((stat) => (
@@ -60,31 +49,20 @@ const StatistiquesSatisfaction = () => {
               </div>
               <div className="stats-item">
                 <span className="stats-label">Note moyenne :</span>
-                <span className="stats-value">
-                  {stat.noteMoyenne.toFixed(1)} / 5
-                </span>
+                <span className="stats-value">{stat.noteMoyenne.toFixed(1)} / 5</span>
               </div>
               <div className="stats-item">
                 <span className="stats-label">Taux de satisfaction :</span>
                 <span className="stats-value">
-                  {(
-                    ((stat.distribution[4] + stat.distribution[5]) /
-                      stat.totalDemandes) *
-                    100
-                  ).toFixed(1)}
-                  %
+                  {(((stat.distribution[4] + stat.distribution[5]) / stat.totalDemandes) * 100).toFixed(1)}%
                 </span>
               </div>
               <div className="star-distribution">
                 <h4>Distribution des notes :</h4>
                 {[1, 2, 3, 4, 5].map((note) => (
                   <div key={note} className="star-row">
-                    <span className="star-label">
-                      {note} étoile{note > 1 ? "s" : ""} :
-                    </span>
-                    <span className="star-value">
-                      {stat.distribution[note] || 0}
-                    </span>
+                    <span className="star-label">{note} étoile{note > 1 ? "s" : ""} :</span>
+                    <span className="star-value">{stat.distribution[note] || 0}</span>
                   </div>
                 ))}
               </div>
