@@ -31,13 +31,7 @@ const StatistiquesSatisfaction = () => {
         );
 
         console.log("📊 Données reçues:", response.data);
-
-        if (!response.data || response.data.length === 0) {
-          setError("Aucune donnée de statistiques disponible");
-          return;
-        }
-
-        setStatistiques(response.data);
+        setStatistiques(response.data || []);
         setError(null);
       } catch (error) {
         console.error("❌ Erreur:", error);
@@ -74,47 +68,62 @@ const StatistiquesSatisfaction = () => {
       </h2>
 
       <div className="stats-grid">
-        {statistiques.map((stat) => (
-          <div key={stat.strate._id} className="stats-card">
-            <h3 className="strate-title">{stat.strate.nom}</h3>
-            <div className="stats-content">
-              <div className="stats-item">
-                <span className="stats-label">Total des demandes :</span>
-                <span className="stats-value">{stat.totalDemandes}</span>
-              </div>
-              <div className="stats-item">
-                <span className="stats-label">Note moyenne :</span>
-                <span className="stats-value">
-                  {stat.noteMoyenne.toFixed(1)} / 5
-                </span>
-              </div>
-              <div className="stats-item">
-                <span className="stats-label">Taux de satisfaction :</span>
-                <span className="stats-value">
-                  {(
-                    ((stat.distribution[4] + stat.distribution[5]) /
-                      stat.totalDemandes) *
-                    100
-                  ).toFixed(1)}
-                  %
-                </span>
-              </div>
-              <div className="star-distribution">
-                <h4>Distribution des notes :</h4>
-                {[1, 2, 3, 4, 5].map((note) => (
-                  <div key={note} className="star-row">
-                    <span className="star-label">
-                      {note} étoile{note > 1 ? "s" : ""} :
-                    </span>
-                    <span className="star-value">
-                      {stat.distribution[note] || 0}
-                    </span>
-                  </div>
-                ))}
+        {statistiques.length > 0 ? (
+          statistiques.map((stat) => (
+            <div key={stat.strate._id} className="stats-card">
+              <h3 className="strate-title">{stat.strate.nom}</h3>
+              <div className="stats-content">
+                <div className="stats-item">
+                  <span className="stats-label">Total des demandes :</span>
+                  <span className="stats-value">
+                    {stat.totalDemandes || "N/A"}
+                  </span>
+                </div>
+                <div className="stats-item">
+                  <span className="stats-label">Note moyenne :</span>
+                  <span className="stats-value">
+                    {stat.noteMoyenne
+                      ? `${stat.noteMoyenne.toFixed(1)} / 5`
+                      : "N/A"}
+                  </span>
+                </div>
+                <div className="stats-item">
+                  <span className="stats-label">Taux de satisfaction :</span>
+                  <span className="stats-value">
+                    {stat.totalDemandes && stat.distribution
+                      ? `${(
+                          ((stat.distribution[4] + stat.distribution[5]) /
+                            stat.totalDemandes) *
+                          100
+                        ).toFixed(1)}%`
+                      : "N/A"}
+                  </span>
+                </div>
+                <div className="star-distribution">
+                  <h4>Distribution des notes :</h4>
+                  {[1, 2, 3, 4, 5].map((note) => (
+                    <div key={note} className="star-row">
+                      <span className="star-label">
+                        {note} étoile{note > 1 ? "s" : ""} :
+                      </span>
+                      <span className="star-value">
+                        {stat.distribution?.[note] || "N/A"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
+          ))
+        ) : (
+          <div className="no-data">
+            <p>Aucune donnée de statistiques disponible</p>
+            <p className="sub-text">
+              Les statistiques apparaîtront ici une fois que des demandes auront
+              été évaluées.
+            </p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

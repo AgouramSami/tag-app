@@ -116,6 +116,27 @@
   max-width: 600px;
 }
 
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 2rem auto;
+  max-width: 600px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.no-data p {
+  margin: 0;
+  color: #6c757d;
+}
+
+.no-data .sub-text {
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: #adb5bd;
+}
+
 @media (max-width: 768px) {
   .stats-container {
     padding: 1rem;
