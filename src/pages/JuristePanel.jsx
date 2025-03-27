@@ -92,25 +92,17 @@ const JuristePanel = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
         }
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("❌ Erreur serveur:", errorData);
-        throw new Error(
-          errorData.message || "Erreur lors de l'envoi de la réponse"
-        );
-      }
-
-      const updatedDemande = await response.json();
-      console.log("✅ Réponse envoyée avec succès:", updatedDemande);
+      console.log("✅ Réponse envoyée avec succès:", response.data);
 
       // Mettre à jour la liste des demandes
       setDemandes(
         demandes.map((d) =>
-          d._id === demandeSelectionnee._id ? updatedDemande.demande : d
+          d._id === demandeSelectionnee._id ? response.data.demande : d
         )
       );
 

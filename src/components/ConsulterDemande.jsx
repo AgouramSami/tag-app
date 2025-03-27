@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import CloturerDemande from "./CloturerDemande";
 import "../styles/ConsulterDemande.css";
+import axiosInstance from "../config/api";
 
 const API_URL = "http://localhost:5000"; // URL du backend
 
@@ -11,49 +12,45 @@ const ConsulterDemande = ({ demande, onSubmit, onRetour }) => {
   const [erreurFichier, setErreurFichier] = useState("");
   const [showCloturer, setShowCloturer] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!reponse.trim()) {
-      alert("La réponse ne peut pas être vide");
-      return;
+    try {
+      const formData = new FormData();
+      formData.append("texte", reponse);
+      if (fichier) {
+        formData.append("fichiers", fichier);
+      }
+
+      const response = await axiosInstance.post(
+        `/demandes/${demande._id}/message`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      onSubmit(response.data);
+    } catch (error) {
+      console.error("❌ Erreur:", error);
+      alert("Une erreur est survenue lors de l'envoi de la réponse");
     }
-
-    // Créer un objet avec la réponse et le fichier
-    const reponseData = {
-      texte: reponse,
-      fichier: fichier,
-    };
-
-    // Log des données avant envoi
-    console.log("📤 Envoi de la réponse:", {
-      texte: reponseData.texte,
-      fichier: reponseData.fichier?.name,
-    });
-
-    onSubmit(reponseData);
   };
 
   const handleCloturer = async (note) => {
     try {
       const token = sessionStorage.getItem("token");
-      const response = await fetch(
-        `${API_URL}/api/demandes/${demande._id}/cloturer`,
+      const response = await axiosInstance.put(
+        `/demandes/${demande._id}/cloturer`,
+        { note },
         {
-          method: "PUT",
           headers: {
-            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ note }),
         }
       );
 
-      if (!response.ok) {
-        throw new Error("Erreur lors de la clôture de la demande");
-      }
-
-      const data = await response.json();
-      console.log("✅ Demande clôturée avec succès:", data);
+      console.log("✅ Demande clôturée avec succès:", response.data);
       onRetour(); // Retour à la liste des demandes
     } catch (error) {
       console.error("❌ Erreur lors de la clôture:", error);
